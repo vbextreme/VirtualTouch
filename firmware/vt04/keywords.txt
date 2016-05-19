@@ -1,0 +1,67 @@
+#######################################
+# Syntax Coloring Map For Scheduler
+#######################################
+
+#######################################
+# DataTypes (LITERAL2)
+#######################################
+
+pin_s	LITERAL2		RESERVED_WORD_2
+port_t	LITERAL2		RESERVED_WORD_2
+mask8_t	LITERAL2		RESERVED_WORD_2
+TaskStack	LITERAL2		RESERVED_WORD_2
+TaskContext	LITERAL2		RESERVED_WORD_2
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+vt04	KEYWORD1	vt04
+VT04	KEYWORD1	VT04
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+init	KEYWORD2
+setMaxTime	KEYWORD2
+setSpeed	KEYWORD2
+setAlpha	KEYWORD2
+realDistance	KEYWORD2
+setPeso	KEYWORD2
+setEMSFlags	KEYWORD2
+readTime	KEYWORD2
+readDistance	KEYWORD2
+readPlane	KEYWORD2
+readMoos	KEYWORD2
+time	KEYWORD2
+distance	KEYWORD2
+plane	KEYWORD2
+debug	KEYWORD2
+serialMode	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+#######################################
+# Constant (LITERAL2)
+#######################################
+
+VT_SX	LITERAL2		RESERVED_WORD_2
+VT_DX	LITERAL2		RESERVED_WORD_2
+VT_DW	LITERAL2		RESERVED_WORD_2
+VT_UP	LITERAL2		RESERVED_WORD_2
+VT_DW	LITERAL2		RESERVED_WORD_2
+VT_X	LITERAL2		RESERVED_WORD_2
+VT_Y	LITERAL2		RESERVED_WORD_2
+VT_Z	LITERAL2		RESERVED_WORD_2
+VT_ALPHA_TIME	LITERAL2		RESERVED_WORD_2
+VT_ALPHA_DISTANCE	LITERAL2		RESERVED_WORD_2
+VT_ALPHA_PLANE	LITERAL2		RESERVED_WORD_2
+
+#######################################
+# Function (KEYWORD3)
+#######################################
+
+always_inline	KEYWORD3		RESERVED_WORD
