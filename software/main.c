@@ -58,6 +58,34 @@ void_t gui_mouse_xy(uint_t y, uint_t x)
     dbg_return(0);
 }
 
+void gui_mouse_left(uint_t state)
+{
+    XEvent event; 
+    memset (&event, 0, sizeof (event)); 
+    event.xbutton.button = Button1;
+    event.xbutton.same_screen = True;
+    event.xbutton.subwindow = rootwindow;
+    while (event.xbutton.subwindow) 
+    { 
+        event.xbutton.window = event.xbutton.subwindow;
+        XQueryPointer(dsp, event.xbutton.window, &event.xbutton.root, &event.xbutton.subwindow, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
+    } 
+        
+    if ( state )
+    {
+        event.type = ButtonPress; 
+        if (XSendEvent (dsp, PointerWindow, True, ButtonPressMask, &event) == 0) 
+            dbg_error("button press"); 
+    }
+    else
+    {
+        event.type = ButtonRelease; 
+        if (XSendEvent (dsp, PointerWindow, True, ButtonReleaseMask, &event) == 0) 
+            dbg_error("button release"); 
+    }
+    XFlush (dsp);
+}
+
 void_t gui_screen_size(int_t* h, int_t* w)
 {
     dbg_function();
@@ -98,7 +126,9 @@ void_t mode_display(virtualtouch_s* vt)
     #ifdef XORG
         int_t gry, grx;
         int_t gscrh, gscrw;
-    
+        int_t oldbutton,button;
+        
+        oldbutton = button = 0;
         gui_begin();
         gui_screen_size(&gscrh, &gscrw);
     
@@ -149,17 +179,23 @@ void_t mode_display(virtualtouch_s* vt)
         vt_moos(vt);
         if ( vt->p3d.z >= (int_t)vt->zi)
         {
+            button = 0;
             cbk = CON_COLOR_BK_LRED;
         }
         else if ( vt->p3d.z > (int_t)vt->zm )
         {
+            button = 0;
             cbk = CON_COLOR_BK_BLACK;
         }
         else if ( vt->p3d.z > (int_t)vt->zd )
         {
+            button = 1;
             cbk = CON_COLOR_BK_GREEN;
         }
         
+        if ( oldbutton != button ) gui_mouse_left(button);
+        oldbutton = button;
+            
         con_gotorc(1 + oldy, 1 + oldx);
         putchar(' ');
         con_gotorc(18,1);
