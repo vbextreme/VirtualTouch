@@ -28,6 +28,26 @@
 #define VT_DEFAULT_MOOSCOUNT       9
 #define VT_DEFAULT_EAMFLAGS        ( VT_ALPHA_TIME | VT_ALPHA_DISTANCE)
 
+#define VT_TIMER 1
+
+#if VT_TIMER == 0
+    #define vt_timer_clock() ({\
+                                 uint16_t urclk;\
+                                 uint8_t  ovf0;\
+                                 uint8_t  clk0;\
+                                 uint8_t sr = SREG;\
+                                 cli();\
+                                 ovf0 = timer0_overflow_count;\
+                                 clk0 = TCNT0;\
+                                 SREG = sr;\
+                                 urclk = (((uint16_t)ovf0 << 8) | (uint16_t)clk0) << 3;\
+                                 urclk;\
+                              })
+#elif VT_TIMER == 1
+    #define vt_timer_clock() TCNT1
+#else
+    #pragma error "timer not supported"
+#endif
 
 typedef uint8_t mask8_t;
 typedef volatile uint8_t port_t;

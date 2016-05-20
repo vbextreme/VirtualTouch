@@ -1,10 +1,12 @@
-VirtualTouch v0.0.0
+VirtualTouch v0.0.1
 ===================
 Virtual touch permette di localizzare la posizione di un oggetto attraverso quattro sensori sr04<br/>
 è presente il firmware che permette l'interfacciamento con un PC o l'utilizzo in modalità standalone
 Stato:
 ======
-* Firmware + Software (0.0.0)
+* Firmware + Software (0.0.0)<br/>
+* Firmware, add timer0, increase speed serial com (0.1.0)<br/>
+* Software, add moore alpha count, union mouse and display (0.1.0)<br/>
 
 Bug:
 ====

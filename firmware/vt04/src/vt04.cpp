@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "vt04.h"
 
-#define WAIT(US) do{ uint16_t _s = TCNT1; while( ((TCNT1 - _s)>>1) < (US) );  }while(0)
+#define WAIT(US) do{ uint16_t _s = vt_timer_clock(); while( ((vt_timer_clock() - _s)>>1) < (US) );  }while(0)
 #define mm_alpha(N) (2000/((N)+1))
     
 typedef struct softtimercapture
@@ -12,7 +12,11 @@ typedef struct softtimercapture
 }stc_s;
     
 extern "C"
-{    
+{   
+    #if VT_TIMER == 0
+        extern volatile uint32_t timer0_overflow_count;
+    #endif
+    
     void inline always_inline pinOpen(pin_s* p, uint8_t n, uint8_t mode)
     {
         pinMode(n, mode);
@@ -77,10 +81,12 @@ VT04::VT04(uint8_t t, uint8_t esx, uint8_t edx, uint8_t eup, uint8_t edw)
 
 void VT04::init(void)
 {
-    TCCR1A = 0;
-    TCCR1B = 0;
-    TCCR1B = 0x02;
-    TCNT1 = 0;
+    #if VT_TIMER == 1
+        TCCR1A = 0;
+        TCCR1B = 0;
+        TCCR1B = 0x02;
+        TCNT1 = 0;
+    #endif
     
     pinLow(&_trigger);
     
@@ -155,8 +161,8 @@ void VT04::readTime(void)
 
     uint16_t mxt = _maxTime << 1;
     
-    stout = TCNT1;
-    while( (si < 4) && (TCNT1 - stout < mxt) )
+    stout = vt_timer_clock();
+    while( (si < 4) && (vt_timer_clock() - stout < mxt) )
     {
         for ( i = 0; i < 4; ++i )
         {
@@ -165,7 +171,7 @@ void VT04::readTime(void)
                 case 0:
                     if ( pinRead(&_echo[i]) )
                     {
-                        st[i] = TCNT1;
+                        st[i] = vt_timer_clock();
                         ++state[i];
                     }
                 break;
@@ -173,7 +179,7 @@ void VT04::readTime(void)
                 case 1:
                     if ( !pinRead(&_echo[i]) )
                     {
-                        _time[i] = TCNT1;
+                        _time[i] = vt_timer_clock();
                         ++state[i];
                         ++si;
                     }
@@ -315,7 +321,7 @@ int16_t VT04::plane(uint8_t s)
 }
 
 void VT04::debug(void)
-{
+{    
     int16_t r = readMoos();
     int8_t x = r >> 8;
     int8_t y = r & 0xFF;
@@ -336,10 +342,18 @@ void VT04::debug(void)
 
 uint8_t VT04::serialMode(void)
 {
-    readTime();
-    if ( Serial.available() < 1 ) return 0;
+    if ( Serial.available() < 1 )
+    {
+        readTime();
+        return 0;
+    }
+    
     uint8_t cmd = Serial.read();
-    if ( cmd != VT_DEFAULT_COMMAND ) return cmd;
+    if ( cmd != VT_DEFAULT_COMMAND )
+    {
+        readTime();
+        return cmd;
+    }
     
     Serial.write( (uint8_t)(_time[0]>>8) );
     Serial.write( (uint8_t)(_time[0] & 0xFF) );

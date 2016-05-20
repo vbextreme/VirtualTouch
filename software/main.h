@@ -128,12 +128,11 @@ typedef void_t(*dbgfail_f)(void_t);
 
 
 
+
 #define MODE_RAW      0
 #define MODE_DISTANCE 1
-#define MODE_MEDIA    2
-#define MODE_3D       3
-#define MODE_DISPLAY  4
-#define MODE_MOUSE    5
+#define MODE_3D       2
+#define MODE_DISPLAY  3
 
 #define PROTO_READ 'X'
 
@@ -147,11 +146,25 @@ typedef void_t(*dbgfail_f)(void_t);
 #define VT_DEFAULT_SPEED_DW     331
 #define VT_DEFAULT_SPEED_SX     331
 #define VT_DEFAULT_SPEED_UP     331
-#define VT_DEFAULT_PESO         80
-#define VT_DEFAULT_MOOS_COUNT   9
+#define VT_DEFAULT_PESOX        1024
+#define VT_DEFAULT_PESOY        768
+#define VT_DEFAULT_PESOZ        500
+#define VT_DEFAULT_MOOS_COUNT   3
 #define VT_DEFAULT_MOOS_LOG     2
 #define VT_DEFAULT_MOOS_INC     100
-#define VT_DEFAULT_ZI           400
+#define VT_DEFAULT_ZI           200
+#define VT_DEFAULT_ZM           100
+#define VT_DEFAULT_ZD           10
+#define VT_DEFAULT_EAMFLAGS     (VT_EAMF_TIME | VT_EAMF_DISTANCE | VT_EAMF_PLANE)
+
+#define VT_EAMF_TIME     1
+#define VT_EAMF_DISTANCE 2
+#define VT_EAMF_PLANE    3
+
+
+
+#define ETSV(M) #M
+#define TSV(M)  ETSV(M)
 
 typedef struct vertex
 {
@@ -168,7 +181,7 @@ typedef struct virtualtouch
     hsrl_s serial;
     
     uint_t countalpha;
-    int_t peso;
+    vertex_s peso;
     
     //vertex_s tollerance;
     vertex_s vxdistance;
@@ -185,6 +198,10 @@ typedef struct virtualtouch
     uint_t moosinc;
     
     uint_t zi;
+    uint_t zm;
+    uint_t zd;
+    
+    uint_t eamflags;
 }virtualtouch_s;
 
 
